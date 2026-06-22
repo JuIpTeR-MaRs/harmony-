@@ -17,6 +17,10 @@ struct MePage {
     this.refreshData();
   }
 
+  onPageShow() {
+    this.refreshData();
+  }
+
   // Refreshes the local states from the global dataset mocks
   refreshData() {
     this.bookingRecords = [...MOCK_RECORDS];

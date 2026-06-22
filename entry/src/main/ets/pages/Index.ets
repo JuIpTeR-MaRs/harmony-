@@ -30,10 +30,52 @@ struct Index {
           message: newFavoriteStatus ? '已添加至我的收藏' : '已取消收藏',
           duration: 2000
         });
-        item.isFavorite = newFavoriteStatus;
-        return item;
+
+        // Sync to global mock data
+        const found = MOCK_SPACES.find(s => s.id === spaceId);
+        if (found) {
+          found.isFavorite = newFavoriteStatus;
+        }
+
+        // Return a new object reference to trigger UI update
+        const updatedItem: SpaceItem = {
+          id: item.id,
+          name: item.name,
+          location: item.location,
+          category: item.category,
+          capacity: item.capacity,
+          availableSeats: item.availableSeats,
+          facilities: item.facilities,
+          description: item.description,
+          image: item.image,
+          rating: item.rating,
+          isBookable: item.isBookable,
+          isFavorite: newFavoriteStatus
+        };
+        return updatedItem;
       }
       return item;
+    });
+  }
+
+  onPageShow() {
+    // Sync spaces state with global MOCK_SPACES when the page is displayed/returned to
+    this.spaces = MOCK_SPACES.map(item => {
+      const copy: SpaceItem = {
+        id: item.id,
+        name: item.name,
+        location: item.location,
+        category: item.category,
+        capacity: item.capacity,
+        availableSeats: item.availableSeats,
+        facilities: item.facilities,
+        description: item.description,
+        image: item.image,
+        rating: item.rating,
+        isBookable: item.isBookable,
+        isFavorite: item.isFavorite
+      };
+      return copy;
     });
   }
 
@@ -214,7 +256,7 @@ struct Index {
               params: { spaceId: item.id }
             });
           })
-        }, (item: SpaceItem) => item.id)
+        }, (item: SpaceItem) => item.id + '_' + item.isFavorite)
       }
       .width('100%')
       .layoutWeight(1)
